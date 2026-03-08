@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head><title>Relay</title></head>
+<body>
+<script>
+(function() {
+  try {
+    const b64 = localStorage.getItem('logoB64');
+    const size = localStorage.getItem('logoSize');
+    if (b64) {
+      window.parent.postMessage(
+        {type: 'logoData', b64: b64, size: Number(size)},
+        'https://developers.tiktok.com'
+      );
+    } else {
+      window.parent.postMessage({type: 'error', msg: 'no logoB64 in localStorage'}, 'https://developers.tiktok.com');
+    }
+  } catch(e) {
+    window.parent.postMessage({type: 'error', msg: e.message}, 'https://developers.tiktok.com');
+  }
+})();
+</script>
+<p>Relay</p>
+</body>
+</html>

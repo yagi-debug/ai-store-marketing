@@ -2,7 +2,7 @@
 <html>
 <head><title>Logo Helper</title></head>
 <body>
-<p id="status">Loading logo...</p>
+<p id="status">Loading...</p>
 <script>
 (async () => {
   const status = document.getElementById('status');
@@ -10,33 +10,28 @@
     status.textContent = 'Fetching logo_1024.png...';
     const resp = await fetch('./logo_1024.png');
     const blob = await resp.blob();
-    status.textContent = 'Read blob: ' + blob.size + ' bytes. Converting to base64...';
+    status.textContent = 'Read blob: ' + blob.size + ' bytes. Converting...';
     const reader = new FileReader();
     reader.onload = function() {
       const b64 = reader.result.split(',')[1];
-      status.textContent = 'Sending ' + b64.length + ' chars to opener...';
-      if (window.opener) {
-        window.opener.postMessage(
-          {type: 'logoData', b64: b64, size: blob.size},
-          'https://developers.tiktok.com'
-        );
-        status.textContent = 'Sent! ' + b64.length + ' chars. You can close this window.';
-      } else {
-        status.textContent = 'Error: no window.opener';
+      try {
+        localStorage.setItem('logoB64', b64);
+        localStorage.setItem('logoSize', String(blob.size));
+        status.textContent = 'DONE: stored ' + b64.length + ' chars in localStorage. Size: ' + blob.size;
+        document.title = 'DONE';
+      } catch(e) {
+        status.textContent = 'localStorage error: ' + e.message;
+        document.title = 'ERROR';
       }
     };
     reader.onerror = function(e) {
-      status.textContent = 'FileReader error: ' + e;
+      status.textContent = 'FileReader error';
+      document.title = 'ERROR';
     };
     reader.readAsDataURL(blob);
   } catch(e) {
-    status.textContent = 'Error: ' + e.message;
-    if (window.opener) {
-      window.opener.postMessage(
-        {type: 'error', msg: e.message},
-        'https://developers.tiktok.com'
-      );
-    }
+    status.textContent = 'Fetch error: ' + e.message;
+    document.title = 'ERROR';
   }
 })();
 </script>
