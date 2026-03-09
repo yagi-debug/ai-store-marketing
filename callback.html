@@ -83,21 +83,26 @@
     const parts = stateParam.split('|');
     if (parts.length < 2) return '';
     try {
-      // URL-safe base64 decode
       const b64 = parts[1];
       return atob(b64.replace(/-/g, '+').replace(/_/g, '/'));
     } catch (e) {
-      console.warn('Failed to decode backend URL from state:', e);
       return '';
     }
   }
 
-  // Exchange code for token via backend
+  // Redirect to backend server for token exchange
+  // (avoids Mixed Content: HTTPS page cannot fetch HTTP localhost)
+  const backendUrl = getBackendUrl(state);
+  if (backendUrl) {
+    // Server-side token exchange via redirect
+    const callbackUrl = backendUrl + '/api/auth/callback' + window.location.search;
+    window.location.href = callbackUrl;
+    return;
+  }
+
+  // Fallback: same-origin fetch (when served from same backend)
   try {
-    // Backend URL: 1) from state param, 2) from localStorage, 3) same-origin
-    const apiBase = getBackendUrl(state) || localStorage.getItem('api_base_url') || '';
-    console.log('Using backend:', apiBase || '(same-origin)');
-    const resp = await fetch(apiBase + '/api/auth/token', {
+    const resp = await fetch('/api/auth/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ code: code, state: state }),
@@ -105,24 +110,15 @@
     const data = await resp.json();
 
     if (data.access_token) {
-      // Store tokens
       sessionStorage.setItem('tiktok_access_token', data.access_token);
-      if (data.refresh_token) {
-        sessionStorage.setItem('tiktok_refresh_token', data.refresh_token);
-      }
-      if (data.open_id) {
-        sessionStorage.setItem('tiktok_open_id', data.open_id);
-      }
+      if (data.refresh_token) sessionStorage.setItem('tiktok_refresh_token', data.refresh_token);
+      if (data.open_id) sessionStorage.setItem('tiktok_open_id', data.open_id);
 
       spinnerEl.style.display = 'none';
       titleEl.textContent = '認証成功！';
       msgEl.textContent = '';
       resultEl.innerHTML = '<div class="success-msg">TikTokアカウントの連携が完了しました。投稿ページに移動します...</div>';
-
-      // Redirect to app page (on the backend server if available)
-      const backendBase = getBackendUrl(state);
-      const appUrl = backendBase ? backendBase + '/app.html' : 'app.html';
-      setTimeout(() => { window.location.href = appUrl; }, 1500);
+      setTimeout(() => { window.location.href = 'app.html'; }, 1500);
     } else {
       throw new Error(data.error_description || data.error || JSON.stringify(data));
     }
