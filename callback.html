@@ -76,10 +76,27 @@
     return;
   }
 
+  // Extract backend URL from state parameter
+  // Format: {random_token}|{base64_backend_url}
+  function getBackendUrl(stateParam) {
+    if (!stateParam) return '';
+    const parts = stateParam.split('|');
+    if (parts.length < 2) return '';
+    try {
+      // URL-safe base64 decode
+      const b64 = parts[1];
+      return atob(b64.replace(/-/g, '+').replace(/_/g, '/'));
+    } catch (e) {
+      console.warn('Failed to decode backend URL from state:', e);
+      return '';
+    }
+  }
+
   // Exchange code for token via backend
   try {
-    // API_BASE_URL: check localStorage or use relative path (same origin)
-    const apiBase = localStorage.getItem('api_base_url') || '';
+    // Backend URL: 1) from state param, 2) from localStorage, 3) same-origin
+    const apiBase = getBackendUrl(state) || localStorage.getItem('api_base_url') || '';
+    console.log('Using backend:', apiBase || '(same-origin)');
     const resp = await fetch(apiBase + '/api/auth/token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -102,8 +119,10 @@
       msgEl.textContent = '';
       resultEl.innerHTML = '<div class="success-msg">TikTokアカウントの連携が完了しました。投稿ページに移動します...</div>';
 
-      // Redirect to app page
-      setTimeout(() => { window.location.href = 'app.html'; }, 1500);
+      // Redirect to app page (on the backend server if available)
+      const backendBase = getBackendUrl(state);
+      const appUrl = backendBase ? backendBase + '/app.html' : 'app.html';
+      setTimeout(() => { window.location.href = appUrl; }, 1500);
     } else {
       throw new Error(data.error_description || data.error || JSON.stringify(data));
     }
