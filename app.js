@@ -20,6 +20,15 @@ let creatorInfo = null;
 // ============================================================
 
 document.addEventListener('DOMContentLoaded', async () => {
+  // Check URL params for token (from server-side redirect after OAuth)
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('access_token')) {
+    sessionStorage.setItem('tiktok_access_token', urlParams.get('access_token'));
+    if (urlParams.get('open_id')) sessionStorage.setItem('tiktok_open_id', urlParams.get('open_id'));
+    // Clean URL (remove token from address bar)
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+
   const token = sessionStorage.getItem('tiktok_access_token');
 
   if (token) {
