@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>認証中... | AI Store Marketing</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .callback-container {
+      max-width: 480px; margin: 120px auto; padding: 40px; text-align: center;
+    }
+    .spinner {
+      width: 40px; height: 40px; margin: 0 auto 24px;
+      border: 4px solid #eee; border-top-color: #6c47ff;
+      border-radius: 50%; animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .callback-container h2 { font-size: 20px; margin-bottom: 12px; }
+    .callback-container p { color: #666; font-size: 14px; }
+    .error-msg { color: #c53030; background: #fff5f5; padding: 16px; border-radius: 8px; margin-top: 20px; font-size: 14px; }
+    .success-msg { color: #22543d; background: #f0fff4; padding: 16px; border-radius: 8px; margin-top: 20px; font-size: 14px; }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo"><img src="logo.png" alt="AI Store Marketing" style="height:40px;vertical-align:middle;margin-right:8px;">AI Store <span>Marketing</span></a>
+</nav>
+
+<div class="callback-container">
+  <div class="spinner" id="spinner"></div>
+  <h2 id="cb-title">TikTok認証を処理中...</h2>
+  <p id="cb-message">しばらくお待ちください</p>
+  <div id="cb-result"></div>
+</div>
+
+<script>
+(async function() {
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const state = params.get('state');
+  const error = params.get('error');
+  const errorDescription = params.get('error_description');
+
+  const titleEl = document.getElementById('cb-title');
+  const msgEl = document.getElementById('cb-message');
+  const resultEl = document.getElementById('cb-result');
+  const spinnerEl = document.getElementById('spinner');
+
+  // Error from TikTok
+  if (error) {
+    spinnerEl.style.display = 'none';
+    titleEl.textContent = '認証エラー';
+    msgEl.textContent = '';
+    resultEl.innerHTML = '<div class="error-msg">TikTok認証に失敗しました: ' +
+      (errorDescription || error) + '</div>';
+    return;
+  }
+
+  // No code
+  if (!code) {
+    spinnerEl.style.display = 'none';
+    titleEl.textContent = 'エラー';
+    msgEl.textContent = '';
+    resultEl.innerHTML = '<div class="error-msg">認証コードが見つかりませんでした。もう一度ログインしてください。</div>';
+    return;
+  }
+
+  // Verify state
+  const savedState = sessionStorage.getItem('tiktok_oauth_state');
+  if (savedState && state !== savedState) {
+    spinnerEl.style.display = 'none';
+    titleEl.textContent = 'セキュリティエラー';
+    msgEl.textContent = '';
+    resultEl.innerHTML = '<div class="error-msg">認証のstate値が一致しません。もう一度ログインしてください。</div>';
+    return;
+  }
+
+  // Exchange code for token via backend
+  try {
+    // API_BASE_URL: check localStorage or use relative path (same origin)
+    const apiBase = localStorage.getItem('api_base_url') || '';
+    const resp = await fetch(apiBase + '/api/auth/token', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ code: code, state: state }),
+    });
+    const data = await resp.json();
+
+    if (data.access_token) {
+      // Store tokens
+      sessionStorage.setItem('tiktok_access_token', data.access_token);
+      if (data.refresh_token) {
+        sessionStorage.setItem('tiktok_refresh_token', data.refresh_token);
+      }
+      if (data.open_id) {
+        sessionStorage.setItem('tiktok_open_id', data.open_id);
+      }
+
+      spinnerEl.style.display = 'none';
+      titleEl.textContent = '認証成功！';
+      msgEl.textContent = '';
+      resultEl.innerHTML = '<div class="success-msg">TikTokアカウントの連携が完了しました。投稿ページに移動します...</div>';
+
+      // Redirect to app page
+      setTimeout(() => { window.location.href = 'app.html'; }, 1500);
+    } else {
+      throw new Error(data.error_description || data.error || JSON.stringify(data));
+    }
+  } catch (err) {
+    spinnerEl.style.display = 'none';
+    titleEl.textContent = 'トークン取得エラー';
+    msgEl.textContent = '';
+    resultEl.innerHTML = '<div class="error-msg">アクセストークンの取得に失敗しました: ' + err.message +
+      '<br><br>バックエンドサーバーが起動していることを確認してください。<br>' +
+      '<code>python scripts/tiktok_server.py</code></div>';
+  }
+})();
+</script>
+</body>
+</html>
