@@ -1,0 +1,128 @@
+<!-- ============================================ -->
+<!-- ReLUMI 追加構造化データ（JSON-LD）              -->
+<!-- 既存のheadタグ内に追加してください               -->
+<!-- ============================================ -->
+
+<!-- 1. LocalBusiness + GeoCoordinates（トップページ用） -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HealthAndBeautyBusiness",
+  "@id": "https://hp.relumi.jp/#business",
+  "name": "美容整体ReLUMI",
+  "alternateName": "リルミ",
+  "description": "天王寺駅すぐの美容整体サロン。骨膜リリースと骨格調整による美姿勢づくり・自律神経ケアを提供する完全予約制の女性専用個室サロン。",
+  "url": "https://hp.relumi.jp/",
+  "telephone": "",
+  "image": "https://hp.relumi.jp/img/ogp.jpg",
+  "priceRange": "¥3,300〜¥15,400",
+  "currenciesAccepted": "JPY",
+  "paymentAccepted": "現金, クレジットカード, PayPay, Suica",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "阿倍野筋1丁目5-31 アポロビル7F",
+    "addressLocality": "大阪市阿倍野区",
+    "addressRegion": "大阪府",
+    "postalCode": "545-0052",
+    "addressCountry": "JP"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 34.6459,
+    "longitude": 135.5131
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "opens": "10:00",
+    "closes": "19:00"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "大阪市"
+  },
+  "founder": {
+    "@type": "Organization",
+    "name": "合同会社アルシェスタイル"
+  },
+  "sameAs": []
+}
+</script>
+
+<!-- 2. Service（各施術メニュー） -->
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "骨膜リリース全身整体コース",
+    "description": "全身の骨膜リリースで骨格を整え、体の不調や姿勢を根本から改善するコース。ボキボキとした強い力の矯正は行いません。",
+    "provider": {"@id": "https://hp.relumi.jp/#business"},
+    "areaServed": {"@type": "City", "name": "大阪市"},
+    "offers": {
+      "@type": "Offer",
+      "price": "15400",
+      "priceCurrency": "JPY",
+      "availability": "https://schema.org/InStock"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "初回体験（全身整体+姿勢分析）",
+    "description": "カウンセリング、姿勢分析、骨膜リリース施術体験、改善プランの提案を含む約60〜80分の初回限定コース。1日2名様限定。",
+    "provider": {"@id": "https://hp.relumi.jp/#business"},
+    "areaServed": {"@type": "City", "name": "大阪市"},
+    "offers": {
+      "@type": "Offer",
+      "price": "3300",
+      "priceCurrency": "JPY",
+      "availability": "https://schema.org/LimitedAvailability"
+    }
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "追加オプション（小顔矯正・自律神経・腸もみ・内臓調整）",
+    "description": "基本コースに追加できるオプション施術。小顔矯正、自律神経ケア、腸もみ、内臓調整から選択可能。",
+    "provider": {"@id": "https://hp.relumi.jp/#business"},
+    "offers": {
+      "@type": "Offer",
+      "price": "4400",
+      "priceCurrency": "JPY",
+      "availability": "https://schema.org/InStock"
+    }
+  }
+]
+</script>
+
+<!-- 3. BreadcrumbList（各ページで変更して使用） -->
+<!-- トップページ用 -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "ホーム",
+      "item": "https://hp.relumi.jp/"
+    }
+  ]
+}
+</script>
+
+<!-- メニューページ用の例 -->
+<!--
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "ホーム", "item": "https://hp.relumi.jp/"},
+    {"@type": "ListItem", "position": 2, "name": "メニュー・料金", "item": "https://hp.relumi.jp/menu.html"}
+  ]
+}
+</script>
+-->

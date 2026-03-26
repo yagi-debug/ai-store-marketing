@@ -1,0 +1,161 @@
+<!-- ============================================ -->
+<!-- Re肌 追加構造化データ（JSON-LD）                -->
+<!-- 既存のheadタグ内に追加してください               -->
+<!-- ============================================ -->
+
+<!-- 1. LocalBusiness + GeoCoordinates（トップページ用） -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "HealthAndBeautyBusiness",
+  "@id": "https://rehada.relumi.jp/#business",
+  "name": "肌質改善Labo Re肌",
+  "alternateName": "リハダ",
+  "description": "大阪・天王寺の肌質改善サロン。整体×ララピールの独自3STEPメソッドで、体の内側から肌を根本改善する完全予約制の個室サロン。",
+  "url": "https://rehada.relumi.jp/",
+  "telephone": "",
+  "image": "https://rehada.relumi.jp/img/ogp.jpg",
+  "priceRange": "¥9,800〜¥18,000",
+  "currenciesAccepted": "JPY",
+  "paymentAccepted": "クレジットカード (Visa, Mastercard, JCB, AMEX, Diners, UnionPay, Discover)",
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "阿倍野筋1丁目5-31 アポロビル7F",
+    "addressLocality": "大阪市阿倍野区",
+    "addressRegion": "大阪府",
+    "postalCode": "545-0052",
+    "addressCountry": "JP"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 34.6459,
+    "longitude": 135.5131
+  },
+  "openingHoursSpecification": {
+    "@type": "OpeningHoursSpecification",
+    "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
+    "opens": "10:00",
+    "closes": "19:00"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "大阪市"
+  },
+  "sameAs": []
+}
+</script>
+
+<!-- 2. Service（各施術メニュー） -->
+<script type="application/ld+json">
+[
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "ララピール（顔+頭蓋骨+骨格）",
+    "description": "頭蓋骨・頭までトータルケア。腸もみ→自律神経調整→ララピールの3STEPで、血流を促し肌の土台から整えるRe肌おすすめメニュー。施術時間90分。",
+    "provider": {"@id": "https://rehada.relumi.jp/#business"},
+    "areaServed": {"@type": "City", "name": "大阪市"},
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "初回価格",
+        "price": "15000",
+        "priceCurrency": "JPY",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "name": "通常価格",
+        "price": "17000",
+        "priceCurrency": "JPY",
+        "availability": "https://schema.org/InStock"
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "ララピール（顔+頭蓋骨+骨格）+骨もみ",
+    "description": "トータルケアに骨もみをプラス。身体からも新生する肌へ導く90分コース。",
+    "provider": {"@id": "https://rehada.relumi.jp/#business"},
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "初回価格",
+        "price": "16000",
+        "priceCurrency": "JPY",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "name": "通常価格",
+        "price": "18000",
+        "priceCurrency": "JPY",
+        "availability": "https://schema.org/InStock"
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "ララピール（顔のみ）",
+    "description": "LHA成分が肌の内側から細胞を活性化。刺激せず血流を満たす最新の肌育ピーリング。施術時間60分。",
+    "provider": {"@id": "https://rehada.relumi.jp/#business"},
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "初回価格",
+        "price": "9800",
+        "priceCurrency": "JPY",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "name": "通常価格",
+        "price": "12000",
+        "priceCurrency": "JPY",
+        "availability": "https://schema.org/InStock"
+      }
+    ]
+  },
+  {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    "name": "ララピール（顔のみ）+骨もみ",
+    "description": "顔のケアに骨もみをプラス。体の中から肌を育てる60分コース。",
+    "provider": {"@id": "https://rehada.relumi.jp/#business"},
+    "offers": [
+      {
+        "@type": "Offer",
+        "name": "初回価格",
+        "price": "10800",
+        "priceCurrency": "JPY",
+        "availability": "https://schema.org/InStock"
+      },
+      {
+        "@type": "Offer",
+        "name": "通常価格",
+        "price": "13000",
+        "priceCurrency": "JPY",
+        "availability": "https://schema.org/InStock"
+      }
+    ]
+  }
+]
+</script>
+
+<!-- 3. BreadcrumbList（各ページで変更して使用） -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "ホーム",
+      "item": "https://rehada.relumi.jp/"
+    }
+  ]
+}
+</script>
